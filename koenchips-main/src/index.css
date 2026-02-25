@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    background-color: #FFFFFF;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 text-white font-heading font-semibold px-6 py-3 rounded-full hover:bg-primary-700 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply border-2 border-primary-500 text-primary-700 font-heading font-semibold px-6 py-3 rounded-full hover:bg-primary-50 transition-all duration-200 hover:scale-[1.02] active:scale-95;
+  }
+  
+  .card-product {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden;
+  }
+  
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  .section-title {
+    @apply font-heading text-3xl md:text-4xl font-bold text-neutral-900 mb-4;
+  }
+  
+  .section-subtitle {
+    @apply text-gray-600 text-base md:text-lg max-w-2xl mx-auto;
+  }
+
+  /* Batik Sukun Pattern */
+  .batik-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c-2 5-7 10-7 15 0 8 7 15 7 15s7-7 7-15c0-5-5-10-7-15z' fill='%2317A36B' fill-opacity='0.06'/%3E%3Cpath d='M30 25c-1.5 4-5.5 8-5.5 12 0 6 5.5 11 5.5 11s5.5-5 5.5-11c0-4-4-8-5.5-12z' fill='%2317A36B' fill-opacity='0.04'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%2317A36B' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Batik Sukun Diagonal */
+  .batik-diagonal {
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 10c-3 8-10 15-10 23 0 10 10 17 10 17s10-7 10-17c0-8-7-15-10-23z' fill='%2317A36B' fill-opacity='0.05'/%3E%3Cpath d='M20 50c-2 5-6 10-6 15 0 7 6 12 6 12s6-5 6-12c0-5-4-10-6-15z' fill='%2317A36B' fill-opacity='0.04'/%3E%3Cpath d='M60 20c2 5 6 10 6 15 0 7-6 12-6 12s-6-5-6-12c0-5 4-10 6-15z' fill='%2317A36B' fill-opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Subtle leaf pattern */
+  .leaf-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 5c0 0 10 5 10 15 0 7-3 12-10 15-7-3-10-8-10-15 0-10 10-15 10-15z' fill='%2317A36B' fill-opacity='0.04'/%3E%3Cpath d='M20 15v20M20 15c-3 3-5 8-5 12M20 15c3 3 5 8 5 12' stroke='%2317A36B' stroke-opacity='0.03' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Elegant dot pattern */
+  .dot-pattern {
+    background-image: radial-gradient(circle, #17A36B 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: #F8FAFC;
+  }
+
+  /* Premium card effect */
+  .premium-card {
+    @apply bg-white rounded-2xl shadow-lg;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #17A36B, #7BE0B3, #17A36B);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Glow effect */
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(23, 163, 107, 0.15);
+  }
+
+  .glow-primary:hover {
+    box-shadow: 0 0 30px rgba(23, 163, 107, 0.25);
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #17A36B;
+  border-radius: 3px;
+}
+
+/* Blob background animation delay utilities */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #17A36B;
+  outline-offset: 2px;
+}
+
+/* Star rating */
+.star-rating {
+  color: #F6C445;
+}
+
+/* Text colors */
+.text-primary-dark {
+  color: #1a1a1a;
+}
+
+.text-secondary-dark {
+  color: #333333;
+}
+
+/* Additional utility classes */
+.text-gradient {
+  background: linear-gradient(135deg, #17A36B 0%, #0F6A4D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

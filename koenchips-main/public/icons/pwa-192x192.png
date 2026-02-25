@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#17A36B"/>
+  <circle cx="96" cy="82" r="44" fill="white" fill-opacity="0.15"/>
+  <text x="96" y="110" text-anchor="middle" font-size="72" font-family="'Poppins',sans-serif" font-weight="700" fill="white">K</text>
+  <text x="96" y="160" text-anchor="middle" font-size="18" font-family="'Inter',sans-serif" font-weight="600" fill="white" letter-spacing="3">CHIPS</text>
+</svg>
