@@ -75,9 +75,9 @@ export default function Shop() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-primary-200 text-base md:text-lg"
+            className="text-white text-base md:text-lg"
           >
-            Temukan varian KOENCHIPS favoritmu — renyah, rendah lemak, rasa premium.
+            Temukan varian KOENCHIPS favoritmu renyah, rendah lemak, rasa premium, Ngemil Tanpa Overthinking, Renyah, ringan, dan tetap memuaskan. Siap dikirim ke seluruh Indonesia.
           </motion.p>
         </div>
       </section>

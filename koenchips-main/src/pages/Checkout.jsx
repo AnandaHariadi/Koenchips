@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import {
   ShoppingBag, Trash2, Plus, Minus, MessageCircle,
   User, Phone, MapPin, FileText, ArrowLeft, CheckCircle,
-  Truck, Package
+  Truck, Package, CreditCard, Wallet, Edit3
 } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { formatPrice } from '../utils/formatCurrency'
@@ -20,15 +20,25 @@ const generateOrderId = () => {
 }
 
 // Save order to localStorage
-const saveOrder = (orderId, items, form, total) => {
+const saveOrder = (orderId, items, form, total, shippingCost, paymentMethod) => {
   try {
     const existingOrders = JSON.parse(localStorage.getItem('koenchips_orders') || '{}')
     
     const newOrder = {
       id: orderId,
       customerName: form.name,
-      items: items.map(({ product, qty }) => `${product.name} x${qty}`),
+      phone: form.phone,
+      address: form.address,
+      items: items.map(({ product, qty }) => ({
+        name: product.name,
+        image: product.image,
+        price: product.price,
+        qty: qty,
+        subtotal: product.price * qty
+      })),
       total: total,
+      shippingCost: shippingCost,
+      paymentMethod: paymentMethod,
       status: 'order_placed',
       orderDate: new Date().toISOString().split('T')[0],
       estimatedDelivery: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -66,6 +76,23 @@ export default function Checkout() {
 
   const [form, setForm] = useState({ name: '', phone: '', address: '', notes: '' })
   const [errors, setErrors] = useState({})
+  const [shippingCost, setShippingCost] = useState(0)
+  const [courier, setCourier] = useState('jne')
+  const [paymentMethod, setPaymentMethod] = useState('COD')
+  const [showForm, setShowForm] = useState(false)
+
+  const shippingOptions = [
+    { id: 'jne', name: 'JNE', cost: 15000, estimate: '1-2 Hari' },
+    { id: 'jnt', name: 'J&T', cost: 12000, estimate: '1-2 Hari' },
+    { id: 'sicepat', name: 'SiCepat', cost: 10000, estimate: '1-3 Hari' },
+    { id: 'grab', name: 'GrabExpress', cost: 20000, estimate: 'Same Day' },
+  ]
+
+  const paymentOptions = [
+    { id: 'COD', name: 'COD (Bayar di Tempat)', icon: Truck },
+    { id: 'Transfer', name: 'Transfer Bank', icon: CreditCard },
+    { id: 'E-Wallet', name: 'E-Wallet', icon: Wallet },
+  ]
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -73,9 +100,16 @@ export default function Checkout() {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }))
   }
 
+  const handleCourierChange = (option) => {
+    setCourier(option.id)
+    setShippingCost(option.cost)
+  }
+
   const validate = () => {
     const newErrors = {}
     if (!form.name.trim()) newErrors.name = 'Nama wajib diisi'
+    if (!form.phone.trim()) newErrors.phone = 'Nomor HP wajib diisi'
+    if (!form.address.trim()) newErrors.address = 'Alamat wajib diisi'
     return newErrors
   }
 
@@ -87,14 +121,16 @@ export default function Checkout() {
     const newErrors = validate()
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
+      toast.error('Mohon lengkapi data pengiriman!')
       return
     }
     
     // Generate order ID
     const newOrderId = generateOrderId()
+    const grandTotal = totalPrice + shippingCost
     
     // Save order to localStorage for tracking
-    saveOrder(newOrderId, items, form, totalPrice)
+    saveOrder(newOrderId, items, form, grandTotal, shippingCost, paymentMethod)
     
     // Open WhatsApp with order ID
     openWhatsApp(items, form, newOrderId)
@@ -104,24 +140,28 @@ export default function Checkout() {
     navigate(`/lacak-pesanan?id=${newOrderId}`)
   }
 
+  const grandTotal = totalPrice + shippingCost
+
   return (
-    <section className="bg-neutral-100 min-h-[80vh] py-10 md:py-14 leaf-pattern">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
+    <section className="bg-gray-100 min-h-screen pb-24">
+      {/* Header */}
+      <div className="bg-white shadow-sm sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 bg-white hover:bg-gray-50 rounded-full shadow-sm transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 text-gray-600" />
+            <ArrowLeft className="w-5 h-5 text-gray-700" />
           </button>
-          <h1 className="font-heading font-bold text-2xl md:text-3xl text-neutral-900">
+          <h1 className="font-heading font-bold text-xl text-neutral-900">
             Checkout
           </h1>
         </div>
+      </div>
 
+      <div className="max-w-5xl mx-auto px-4 py-4 space-y-3">
         {items.length === 0 ? (
-          <div className="text-center py-20">
+          <div className="bg-white rounded-xl p-8 text-center">
             <ShoppingBag className="w-16 h-16 text-gray-200 mx-auto mb-4" />
             <p className="font-heading font-semibold text-gray-400 text-xl mb-2">
               Keranjang kosong
@@ -135,216 +175,283 @@ export default function Checkout() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-            {/* Left: Cart items */}
-            <div className="space-y-4">
-              <div className="bg-white rounded-2xl p-5 shadow-sm">
-                <h2 className="font-heading font-bold text-base text-neutral-900 mb-4 flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-primary-500" />
-                  Pesanan Kamu ({items.length} produk)
+          <>
+            {/* Alamat Pengiriman */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-primary-50 px-4 py-2 border-b border-primary-100">
+                <h2 className="font-heading font-bold text-sm text-primary-800 flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Alamat Pengiriman
                 </h2>
-
-                <ul className="space-y-3">
-                  {items.map(({ product, qty }) => (
-                    <motion.li
-                      key={product.id}
-                      layout
-                      className="flex gap-3 p-3 bg-gray-50 rounded-xl"
-                    >
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        loading="lazy"
-                        className="w-16 h-16 object-cover rounded-lg shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-heading font-bold text-sm text-neutral-900 truncate">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-gray-500 mb-2">{product.weight}</p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => decreaseQty(product.id)}
-                              className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center hover:bg-primary-50 hover:border-primary-500 transition-colors"
-                            >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <span className="w-7 text-center text-sm font-heading font-bold">{qty}</span>
-                            <button
-                              onClick={() => increaseQty(product.id)}
-                              className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center hover:bg-primary-50 hover:border-primary-500 transition-colors"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </button>
-                          </div>
-                          <span className="font-heading font-bold text-sm text-primary-700">
-                            {formatPrice(product.price * qty)}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => removeItem(product.id)}
-                        className="self-start p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </motion.li>
-                  ))}
-                </ul>
               </div>
-
-              {/* Form */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm">
-                <h2 className="font-heading font-bold text-base text-neutral-900 mb-4 flex items-center gap-2">
-                  <User className="w-4 h-4 text-primary-500" />
-                  Detail Pemesan
-                </h2>
-
-                <div className="space-y-4">
-                  {/* Name */}
-                  <div>
-                    <label className="block text-xs font-heading font-semibold text-gray-700 mb-1.5">
-                      Nama Lengkap <span className="text-red-400">*</span>
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <div className="p-4">
+                {showForm ? (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Nama Penerima <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         name="name"
                         value={form.name}
                         onChange={handleChange}
-                        placeholder="Nama kamu..."
-                        className={`w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition ${
+                        placeholder="Nama lengkap"
+                        className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                           errors.name ? 'border-red-400 bg-red-50' : 'border-gray-200'
                         }`}
                       />
+                      {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
                     </div>
-                    {errors.name && (
-                      <p className="text-xs red-500 mt-1">{errors.name}</p>
-                    )}
-                  </div>
-
-                  {/* Phone */}
-                  <div>
-                    <label className="block text-xs font-heading font-semibold text-gray-700 mb-1.5">
-                      No. HP{' '}
-                      <span className="text-gray-400 font-body font-normal">(opsional)</span>
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Nomor HP <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="tel"
                         name="phone"
                         value={form.phone}
                         onChange={handleChange}
                         placeholder="08xx-xxxx-xxxx"
-                        className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition"
+                        className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                          errors.phone ? 'border-red-400 bg-red-50' : 'border-gray-200'
+                        }`}
                       />
+                      {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
                     </div>
-                  </div>
-
-                  {/* Address */}
-                  <div>
-                    <label className="block text-xs font-heading font-semibold text-gray-700 mb-1.5">
-                      Alamat Pengiriman{' '}
-                      <span className="text-gray-400 font-body font-normal">(opsional)</span>
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Alamat Lengkap <span className="text-red-500">*</span>
+                      </label>
                       <textarea
                         name="address"
                         value={form.address}
                         onChange={handleChange}
-                        placeholder="Jl. Contoh No. 1, Kota..."
+                        placeholder="Jl. Contoh No. 1, Kota, Provinsi"
                         rows={2}
-                        className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition resize-none"
+                        className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none ${
+                          errors.address ? 'border-red-400 bg-red-50' : 'border-gray-200'
+                        }`}
                       />
+                      {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address}</p>}
                     </div>
+                    <button
+                      onClick={() => setShowForm(false)}
+                      className="w-full bg-primary-500 text-white font-semibold py-2 rounded-lg text-sm"
+                    >
+                      Simpan Alamat
+                    </button>
                   </div>
-
-                  {/* Notes */}
-                  <div>
-                    <label className="block text-xs font-heading font-semibold text-gray-700 mb-1.5">
-                      Catatan{' '}
-                      <span className="text-gray-400 font-body font-normal">(opsional)</span>
-                    </label>
-                    <div className="relative">
-                      <FileText className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                      <textarea
-                        name="notes"
-                        value={form.notes}
-                        onChange={handleChange}
-                        placeholder="Catatan tambahan untuk pesanan..."
-                        rows={2}
-                        className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition resize-none"
-                      />
+                ) : (
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-sm">{form.name || 'Nama Penerima'}</span>
+                        <span className="text-gray-300">|</span>
+                        <span className="text-sm text-gray-600">{form.phone || 'Nomor HP'}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{form.address || 'Alamat belum diisi'}</p>
+                      {(!form.name || !form.phone || !form.address) && (
+                        <p className="text-xs text-orange-500 mt-2">Mohon lengkapi alamat pengiriman</p>
+                      )}
                     </div>
+                    <button
+                      onClick={() => setShowForm(true)}
+                      className="flex items-center gap-1 text-primary-600 font-semibold text-sm hover:text-primary-700"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      Ubah
+                    </button>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 
-            {/* Right: Summary */}
-            <div className="space-y-4">
-              <div className="bg-white rounded-2xl p-5 shadow-sm sticky top-20">
-                <h2 className="font-heading font-bold text-base text-neutral-900 mb-4">
-                  Ringkasan Pesanan
+            {/* Metode Pengiriman */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-primary-50 px-4 py-2 border-b border-primary-100">
+                <h2 className="font-heading font-bold text-sm text-primary-800 flex items-center gap-2">
+                  <Truck className="w-4 h-4" />
+                  Metode Pengiriman
                 </h2>
-
-                <div className="space-y-2 mb-4">
-                  {items.map(({ product, qty }) => (
-                    <div key={product.id} className="flex justify-between text-sm">
-                      <span className="text-gray-600 truncate flex-1 mr-2">
-                        {product.name} x{qty}
-                      </span>
-                      <span className="font-heading font-semibold text-neutral-900 shrink-0">
-                        {formatPrice(product.price * qty)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-gray-100 pt-3 mb-5">
-                  <div className="flex justify-between items-center">
-                    <span className="font-heading font-semibold text-gray-700">Total</span>
-                    <span className="font-heading font-bold text-xl text-primary-700">
-                      {formatPrice(totalPrice)}
-                    </span>
-                  </div>
-                </div>
-
-                <motion.button
-                  onClick={handleCheckout}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-heading font-bold py-3.5 rounded-full transition-all duration-300 hover:scale-[1.01] shadow-lg shadow-primary-500/30"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Checkout via WhatsApp
-                </motion.button>
-
-                <p className="text-center text-xs text-gray-400 mt-3">
-                  Kamu akan diarahkan ke WhatsApp untuk konfirmasi pesanan.
-                </p>
-                
-                {/* Tracking Button - More Visible */}
-                <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
-                  <Link 
-                    to="/lacak-pesanan" 
-                    className="flex items-center justify-center gap-2 w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-heading font-semibold py-2.5 rounded-full transition-colors text-sm"
+              </div>
+              <div className="p-4 space-y-2">
+                {shippingOptions.map((option) => (
+                  <label
+                    key={option.id}
+                    className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition ${
+                      courier === option.id
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
                   >
-                    <Truck className="w-4 h-4" />
-                    Cek Pesanan & Lacak Paket
-                  </Link>
-                  <p className="text-center text-xs text-gray-400">
-                    Sudah pernah pesan? Klik untuk lacak
-                  </p>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="courier"
+                        checked={courier === option.id}
+                        onChange={() => handleCourierChange(option)}
+                        className="hidden"
+                      />
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        courier === option.id ? 'border-primary-500' : 'border-gray-300'
+                      }`}>
+                        {courier === option.id && <div className="w-2.5 h-2.5 rounded-full bg-primary-500" />}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm">{option.name}</p>
+                        <p className="text-xs text-gray-500">Estimasi: {option.estimate}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-sm text-primary-700">
+                      {formatPrice(option.cost)}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Metode Pembayaran */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-primary-50 px-4 py-2 border-b border-primary-100">
+                <h2 className="font-heading font-bold text-sm text-primary-800 flex items-center gap-2">
+                  <Wallet className="w-4 h-4" />
+                  Metode Pembayaran
+                </h2>
+              </div>
+              <div className="p-4 space-y-2">
+                {paymentOptions.map((option) => {
+                  const Icon = option.icon
+                  return (
+                    <label
+                      key={option.id}
+                      className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${
+                        paymentMethod === option.id
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        checked={paymentMethod === option.id}
+                        onChange={() => setPaymentMethod(option.id)}
+                        className="hidden"
+                      />
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        paymentMethod === option.id ? 'border-primary-500' : 'border-gray-300'
+                      }`}>
+                        {paymentMethod === option.id && <div className="w-2.5 h-2.5 rounded-full bg-primary-500" />}
+                      </div>
+                      <Icon className="w-5 h-5 text-gray-600" />
+                      <span className="font-semibold text-sm">{option.name}</span>
+                    </label>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Produk */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-primary-50 px-4 py-2 border-b border-primary-100">
+                <h2 className="font-heading font-bold text-sm text-primary-800 flex items-center gap-2">
+                  <Package className="w-4 h-4" />
+                  Produk ({items.length})
+                </h2>
+              </div>
+              <div className="divide-y divide-gray-100">
+                {items.map(({ product, qty }) => (
+                  <div key={product.id} className="p-4 flex gap-3">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-16 h-16 object-cover rounded-lg shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-neutral-900 truncate">
+                        {product.name}
+                      </p>
+                      <p className="text-xs text-gray-500 mb-2">{product.flavor} - {product.weight}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => decreaseQty(product.id)}
+                            className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="w-7 text-center text-sm font-semibold">{qty}</span>
+                          <button
+                            onClick={() => increaseQty(product.id)}
+                            className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <span className="font-bold text-sm text-primary-700">
+                          {formatPrice(product.price * qty)}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeItem(product.id)}
+                      className="self-start p-1 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ringkasan Pembayaran */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-primary-50 px-4 py-2 border-b border-primary-100">
+                <h2 className="font-heading font-bold text-sm text-primary-800 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Ringkasan Pembayaran
+                </h2>
+              </div>
+              <div className="p-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Total Harga ({items.length} produk)</span>
+                  <span className="font-semibold">{formatPrice(totalPrice)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Total Ongkos Kirim</span>
+                  <span className="font-semibold">{formatPrice(shippingCost)}</span>
+                </div>
+                <div className="border-t border-gray-100 pt-2 mt-2">
+                  <div className="flex justify-between">
+                    <span className="font-bold text-neutral-900">Grand Total</span>
+                    <span className="font-bold text-xl text-orange-600">{formatPrice(grandTotal)}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
+
+      {/* Sticky Button */}
+      {items.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 z-50">
+          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-xs text-gray-500">Total Pembayaran</p>
+              <p className="font-bold text-xl text-orange-600">{formatPrice(grandTotal)}</p>
+            </div>
+            <motion.button
+              onClick={handleCheckout}
+              whileTap={{ scale: 0.97 }}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-green-500/30 flex items-center gap-2"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Checkout via WhatsApp
+            </motion.button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

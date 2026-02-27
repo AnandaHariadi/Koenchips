@@ -4,11 +4,12 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import InstallBanner from './components/InstallBanner'
+import OrderProvider from './context/OrderContext'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Checkout from './pages/Checkout'
+import OrderTracking from './pages/OrderTracking'
 import OfflinePage from './pages/OfflinePage'
-import OrderTracking from './components/OrderTracking'
 
 export default function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
@@ -27,20 +28,22 @@ export default function App() {
   if (!isOnline) return <OfflinePage />
 
   return (
-    <div className="min-h-screen flex flex-col batik-pattern">
-      <Navbar />
-      <CartDrawer />
-      <InstallBanner />
-      <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/katalog" element={<Shop />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/lacak-pesanan" element={<OrderTracking />} />
-          <Route path="/lacak-pesanan/:orderId" element={<OrderTracking />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <OrderProvider>
+      <div className="min-h-screen flex flex-col batik-pattern">
+        <Navbar />
+        <CartDrawer />
+        <InstallBanner />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/katalog" element={<Shop />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/lacak-pesanan" element={<OrderTracking />} />
+            <Route path="/lacak-pesanan/:orderId" element={<OrderTracking />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </OrderProvider>
   )
 }

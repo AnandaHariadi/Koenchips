@@ -8,6 +8,8 @@ import { formatPrice } from '../utils/formatCurrency'
 export default function ProductCard({ product, onViewDetail }) {
   const { addItem, openDrawer } = useCart()
   const [isAdding, setIsAdding] = useState(false)
+  const [showOrderForm, setShowOrderForm] = useState(false)
+  const [orderQty, setOrderQty] = useState(1)
   const isOutOfStock = product.stock === 0
 
   const handleAddToCart = () => {
@@ -16,6 +18,12 @@ export default function ProductCard({ product, onViewDetail }) {
     addItem(product)
     toast.success(`${product.name} ditambahkan ke keranjang!`)
     setTimeout(() => setIsAdding(false), 600)
+  }
+
+  const handleDirectOrder = () => {
+    if (isOutOfStock) return
+    setOrderQty(1)
+    setShowOrderForm(true)
   }
 
   const flavorColor = {
@@ -118,31 +126,43 @@ export default function ProductCard({ product, onViewDetail }) {
         </div>
 
         {/* Price + Add to Cart - Enhanced */}
-        <div className="flex items-center justify-between gap-3 mt-auto pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-gray-100">
           <div className="flex flex-col">
             <span className="text-[10px] text-gray-400 font-body">Harga</span>
             <span className="font-heading font-bold text-xl text-primary-700">
               {formatPrice(product.price)}
             </span>
           </div>
-          <motion.button
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}
-            whileTap={!isOutOfStock ? { scale: 0.9 } : {}}
-            aria-label={`Tambah ${product.name} ke keranjang`}
-            className={`flex items-center gap-2 text-xs font-heading font-bold px-4 py-2.5 rounded-xl transition-all duration-300 ${
-              isOutOfStock
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : isAdding
-                ? 'bg-primary-300 text-primary-900 scale-95 shadow-inner'
-                : 'bg-primary-500 text-white hover:bg-primary-700 hover:shadow-lg hover:scale-105 shadow-md shadow-primary-500/30'
-            }`}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            {isAdding ? 'Ditambahkan!' : 'Tambah'}
-          </motion.button>
+          <div className="flex gap-2 w-full">
+            {/* Add to Cart Button */}
+            <motion.button
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+              whileTap={!isOutOfStock ? { scale: 0.9 } : {}}
+              aria-label={`Tambah ${product.name} ke keranjang`}
+              className={`flex items-center gap-2 text-xs font-heading font-bold px-3 py-2.5 rounded-xl transition-all duration-300 ${
+                isOutOfStock
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : isAdding
+                  ? 'bg-primary-300 text-primary-900 scale-95 shadow-inner'
+                  : 'bg-primary-500 text-white hover:bg-primary-700 hover:shadow-lg shadow-md shadow-primary-500/30'
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {isAdding ? 'Ditambahkan!' : 'Tambah'}
+            </motion.button>
+          </div>
         </div>
       </div>
+
+      {/* Direct Order Form Modal */}
+      {showOrderForm && (
+        <OrderForm
+          product={product}
+          qty={orderQty}
+          onClose={() => setShowOrderForm(false)}
+        />
+      )}
     </motion.div>
   )
 }

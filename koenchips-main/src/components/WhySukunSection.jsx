@@ -54,7 +54,7 @@ export default function WhySukunSection() {
           >
             <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl">
               <img
-                src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=700&h=525&fit=crop&auto=format"
+                src="/Produk bg alam.png"
                 alt="Sukun segar sebagai bahan baku KOENCHIPS"
                 loading="lazy"
                 className="w-full h-full object-cover"

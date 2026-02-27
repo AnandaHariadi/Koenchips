@@ -60,8 +60,7 @@ export default function ProductHighlightsSection() {
             <span className="text-primary-500">Tanpa Berat di Badan</span>
           </h2>
           <p className="section-subtitle mx-auto">
-            Keripik biasa sering berminyak dan bikin cepat enek. KOENCHIPS dibuat dengan
-            proses minim minyak - terasa lebih ringan, tapi tetap crunchy dan nagih.
+            KOENCHIPS dibuat dengan proses minim minyak - terasa lebih ringan, tapi tetap crunchy dan nagih.
           </p>
         </motion.div>
 

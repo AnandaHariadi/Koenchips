@@ -1,12 +1,15 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { X, Star, ShoppingCart, Package, Tag, Truck } from 'lucide-react'
+import { X, Star, ShoppingCart, Package, Tag, Truck, Zap } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useCart } from '../context/CartContext'
 import { formatPrice } from '../utils/formatCurrency'
+import OrderForm from './OrderForm'
 
 export default function ProductModal({ product, onClose }) {
   const { addItem } = useCart()
+  const [showOrderForm, setShowOrderForm] = useState(false)
   const isOutOfStock = product.stock === 0
 
   const handleAddToCart = () => {
@@ -14,6 +17,11 @@ export default function ProductModal({ product, onClose }) {
     addItem(product)
     toast.success(`${product.name} ditambahkan ke keranjang!`)
     onClose()
+  }
+
+  const handleDirectOrder = () => {
+    if (isOutOfStock) return
+    setShowOrderForm(true)
   }
 
   return (
@@ -115,38 +123,53 @@ export default function ProductModal({ product, onClose }) {
             </div>
 
             {/* Price + CTA */}
-            <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
               <span className="font-heading font-bold text-2xl text-primary-700">
                 {formatPrice(product.price)}
               </span>
-              <motion.button
-                onClick={handleAddToCart}
-                disabled={isOutOfStock}
-                whileTap={!isOutOfStock ? { scale: 0.95 } : {}}
-                className={`flex items-center gap-2 font-heading font-bold px-5 py-2.5 rounded-full transition-all duration-200 ${
-                  isOutOfStock
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-primary-500 text-white hover:bg-primary-700 hover:scale-[1.02]'
-                }`}
-              >
-                <ShoppingCart className="w-4 h-4" />
-                Tambah ke Keranjang
-              </motion.button>
-            </div>
-
-            {/* Lacak Pesanan Button */}
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <Link
-                to="/lacak-pesanan"
-                className="flex items-center justify-center gap-2 w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-heading font-semibold py-3 rounded-full transition-colors"
-              >
-                <Truck className="w-4 h-4" />
-                Lacak Pesanan Saya
-              </Link>
+              <div className="flex gap-2">
+                {/* Direct Order Button */}
+                <motion.button
+                  onClick={handleDirectOrder}
+                  disabled={isOutOfStock}
+                  whileTap={!isOutOfStock ? { scale: 0.95 } : {}}
+                  className={`flex items-center gap-2 font-heading font-bold px-4 py-2.5 rounded-full transition-all duration-200 ${
+                    isOutOfStock
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-accent-500 to-orange-400 text-white hover:shadow-lg'
+                  }`}
+                >
+                  <Zap className="w-4 h-4" />
+                  Beli Langsung
+                </motion.button>
+                {/* Add to Cart Button */}
+                <motion.button
+                  onClick={handleAddToCart}
+                  disabled={isOutOfStock}
+                  whileTap={!isOutOfStock ? { scale: 0.95 } : {}}
+                  className={`flex items-center gap-2 font-heading font-bold px-4 py-2.5 rounded-full transition-all duration-200 ${
+                    isOutOfStock
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-primary-500 text-white hover:bg-primary-700 hover:scale-[1.02]'
+                  }`}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  Tambah
+                </motion.button>
+              </div>
             </div>
           </div>
         </div>
       </motion.div>
+
+      {/* Direct Order Form Modal */}
+      {showOrderForm && (
+        <OrderForm
+          product={product}
+          qty={1}
+          onClose={() => setShowOrderForm(false)}
+        />
+      )}
     </>
   )
 }

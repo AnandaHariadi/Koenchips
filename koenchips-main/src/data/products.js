@@ -12,7 +12,7 @@ export const products = [
     rating: 4.8,
     reviews: 132,
     stock: 50,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'single',
   },
   {
@@ -28,7 +28,7 @@ export const products = [
     rating: 4.9,
     reviews: 98,
     stock: 35,
-    image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'single',
   },
   {
@@ -44,7 +44,7 @@ export const products = [
     rating: 4.7,
     reviews: 87,
     stock: 42,
-    image: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'single',
   },
   {
@@ -60,7 +60,7 @@ export const products = [
     rating: 4.8,
     reviews: 76,
     stock: 40,
-    image: 'https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'single',
   },
   {
@@ -76,7 +76,7 @@ export const products = [
     rating: 4.9,
     reviews: 74,
     stock: 20,
-    image: 'https://images.unsplash.com/photo-1587334274328-64186a80aeee?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'bundle',
   },
   {
@@ -92,7 +92,7 @@ export const products = [
     rating: 4.7,
     reviews: 56,
     stock: 15,
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'bundle',
   },
   {
@@ -108,7 +108,7 @@ export const products = [
     rating: 4.6,
     reviews: 110,
     stock: 30,
-    image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop&auto=format',
+    image: '/foto-produk-koenchips.jpeg',
     category: 'bundle',
   },
 ]

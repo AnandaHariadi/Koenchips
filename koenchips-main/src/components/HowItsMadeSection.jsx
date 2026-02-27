@@ -110,8 +110,8 @@ export default function HowItsMadeSection() {
           >
             <div className="relative rounded-3xl overflow-hidden aspect-square shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&h=600&fit=crop&auto=format"
-                alt="Pemrosesan KOENCHIPS yang higienis"
+                src="/Pabrik Koinchips.png"
+                alt="Pabrik KOENCHIPS"
                 loading="lazy"
                 className="w-full h-full object-cover"
               />

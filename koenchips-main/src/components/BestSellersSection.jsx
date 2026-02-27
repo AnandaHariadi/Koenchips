@@ -19,7 +19,11 @@ export default function BestSellersSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-60px' })
 
-  const bestSellers = products.slice(0, 4)
+  // Get first 4 products and replace images with the local product image
+  const bestSellers = products.slice(0, 4).map(product => ({
+    ...product,
+    image: '/produk-koenchips.jpeg'
+  }))
 
   return (
     <section className="section-padding bg-neutral-100 leaf-pattern">
