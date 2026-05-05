@@ -8,30 +8,45 @@ export default {
     extend: {
       colors: {
         primary: {
-          900: '#0B3D2E',
-          700: '#0F6A4D',
-          500: '#17A36B',
-          300: '#7BE0B3',
-          50: '#EDFAF3',
+          950: '#01161a',
+          900: '#042f2e',
+          800: '#065f46',
+          700: '#047857',
+          600: '#059669',
+          500: '#10b981',
+          400: '#34d399',
+          300: '#6ee7b7',
+          200: '#bbf7d0',
+          100: '#d1fae5',
+          50: '#ecfdf5',
         },
         accent: {
-          500: '#F6C445',
+          500: '#d97706',
+          400: '#f59e0b',
+          300: '#fbbf24',
         },
         neutral: {
-          900: '#0F172A',
-          100: '#F8FAFC',
+          900: '#0f172a',
+          800: '#1e293b',
+          100: '#f8fafc',
         },
+        quran: {
+          arabic: '#1a1a1a',
+          tafsir: '#374151',
+        }
       },
       fontFamily: {
         heading: ['Poppins', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
+        arabic: ['Amiri', 'serif'],
       },
       animation: {
         'fade-up': 'fadeUp 0.6s ease-out both',
         'fade-in': 'fadeIn 0.5s ease-out both',
-        'blob': 'blob 7s infinite',
+        'islamic-blob': 'islamicBlob 7s infinite',
         'float': 'float 3s ease-in-out infinite',
-        'gradient': 'gradient 3s ease infinite',
+        'quran-gradient': 'quranGradient 3s ease infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeUp: {
@@ -42,7 +57,7 @@ export default {
           '0%': { opacity: 0 },
           '100%': { opacity: 1 },
         },
-        blob: {
+        islamicBlob: {
           '0%': { transform: 'translate(0px, 0px) scale(1)' },
           '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
@@ -52,7 +67,7 @@ export default {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
         },
-        gradient: {
+        quranGradient: {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
@@ -64,3 +79,4 @@ export default {
   },
   plugins: [],
 }
+

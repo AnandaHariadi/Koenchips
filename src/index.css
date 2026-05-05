@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    background-color: #FFFFFF;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  /* Arabic text styling */
+  .arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    line-height: 2;
+    text-align: right;
+    letter-spacing: 0.5px;
+    direction: rtl;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 text-white font-heading font-semibold px-6 py-3 rounded-full hover:bg-primary-600 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-500 text-neutral-900 font-heading font-semibold px-6 py-3 rounded-full hover:bg-accent-600 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-lg shadow-accent-500/25;
+  }
+  
+  .btn-secondary {
+    @apply border-2 border-primary-500 text-primary-700 font-heading font-semibold px-6 py-3 rounded-full hover:bg-primary-50 hover:border-primary-600 transition-all duration-200 hover:scale-[1.02];
+  }
+  
+  .card-quran {
+    @apply bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-400 hover:scale-[1.02] overflow-hidden border border-primary-100/50;
+  }
+  
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  .section-title {
+    @apply font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 mb-6 bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent;
+  }
+  
+  .section-subtitle {
+    @apply text-neutral-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed;
+  }
+
+  /* Islamic Arabesque Pattern */
+  .arabesque-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 10c8 0 15 7 15 15 0 8-7 15-15 15s-15-7-15-15c0-8 7-15 15-15zm0 25c6 0 10 4 10 10s-4 10-10 10-10-4-10-10 4-10 10-10z' fill='%2310b981' fill-opacity='0.05' stroke='%2310b981' stroke-width='0.5' stroke-opacity='0.1'/%3E%3Cpath d='M20 40c0 5 4 9 9 9h4v-18h-4c-5 0-9 4-9 9zm42 0c0 5-4 9-9 9h-4v-18h4c5 0 9 4 9 9z' fill='%2310b981' fill-opacity='0.03'/%3E%3Ccircle cx='40' cy='20' r='3' fill='%2310b981' fill-opacity='0.1'/%3E%3Ccircle cx='25' cy='45' r='2' fill='%2310b981' fill-opacity='0.08'/%3E%3Ccircle cx='55' cy='45' r='2' fill='%2310b981' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 80px 80px;
+  }
+
+  /* Kufi Geometric Pattern */
+  .kufi-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L35 15 L45 15 L38 22 L40 32 L30 27 L20 32 L22 22 L15 15 L25 15 Z' fill='%2310b981' fill-opacity='0.04' stroke='%2310b981' stroke-width='0.3' stroke-opacity='0.1'/%3E%3Cpath d='M15 45 L20 35 L30 40 L25 30 L20 35 L10 30 L15 40 Z' fill='%23d97706' fill-opacity='0.03'/%3E%3Cpath d='M45 45 L40 35 L50 40 L45 30 L40 35 L50 30 Z' fill='%23d97706' fill-opacity='0.03'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 60px 60px;
+  }
+
+  /* Subtle crescent moon pattern */
+  .crescent-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 50 Q10 30 25 20 Q35 15 45 25 Q50 35 45 50 Q40 65 30 70 Q20 65 20 50 Z' fill='%2310b981' fill-opacity='0.02'/%3E%3Cpath d='M80 50 Q70 30 55 20 Q45 15 35 25 Q30 35 35 50 Q40 65 50 70 Q60 65 80 50 Z' fill='%23d97706' fill-opacity='0.02'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Premium Quran card effect */
+  .quran-card {
+    @apply bg-gradient-to-br from-white to-primary-50/50 backdrop-blur-sm rounded-3xl shadow-2xl hover:shadow-primary-500/20 transition-all duration-500 hover:-translate-y-2 border border-primary-200/50;
+  }
+
+  .quran-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, #d97706, #10b981);
+    background-size: 200% 100%;
+    animation: quran-shimmer 3s linear infinite;
+    border-radius: 9999px 9999px 0 0;
+  }
+
+  /* Glow effect for spiritual elements */
+  .glow-primary {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 25px rgba(217, 119, 6, 0.3);
+  }
+
+  .glow-primary:hover {
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+  }
+}
+
+/* Animations */
+@keyframes quran-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-500 hover:bg-primary-600 rounded-full;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 3px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Star rating for gamification */
+.star-rating {
+  color: #fbbf24;
+}
+
+/* Text gradients */
+.text-gradient-quran {
+  background: linear-gradient(135deg, #10b981 0%, #047857 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.arabic-glow {
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Leaflet Map Custom Styles - kept for potential journal maps */
+.leaflet-container {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Breathing animation for mindfulness */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Mood chart gradients */
+.mood-happy { background: linear-gradient(135deg, #10b981, #34d399); }
+.mood-sad { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+.mood-calm { background: linear-gradient(135deg, #d97706, #fbbf24); }
+
+/* Notification slide */
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out;
+}
+

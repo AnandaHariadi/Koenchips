@@ -8,7 +8,7 @@ export default function InstallBanner() {
   const [isDismissed, setIsDismissed] = useState(false)
 
   useEffect(() => {
-    if (localStorage.getItem('pwa_install_dismissed')) return
+    if (localStorage.getItem('jaguar_pwa_dismissed')) return
 
     const handler = (e) => {
       e.preventDefault()
@@ -32,7 +32,7 @@ export default function InstallBanner() {
   const handleDismiss = () => {
     setIsVisible(false)
     setIsDismissed(true)
-    localStorage.setItem('pwa_install_dismissed', '1')
+    localStorage.setItem('jaguar_pwa_dismissed', '1')
   }
 
   if (!isVisible || isDismissed) return null
@@ -46,29 +46,31 @@ export default function InstallBanner() {
         transition={{ type: 'spring', damping: 25, stiffness: 280 }}
         className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-sm z-40"
       >
-        <div className="bg-primary-900 text-white rounded-2xl p-4 shadow-2xl flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center shrink-0">
-            <Download className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-r from-primary-900 to-primary-800 text-white rounded-2xl p-6 shadow-2xl flex items-center gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+            <Download className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-heading font-semibold text-sm">Install KOENCHIPS App</p>
-            <p className="text-xs text-primary-300 mt-0.5">
-              Akses lebih cepat, bisa offline!
+            <p className="font-heading font-bold text-lg">Install JAGUAR App</p>
+            <p className="text-primary-200 font-medium">
+              Quran Digital Interaktif di HPmu. Bisa offline!
             </p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
+          <div className="flex items-center gap-3 shrink-0 ml-4">
+            <motion.button
               onClick={handleInstall}
-              className="bg-primary-500 hover:bg-primary-700 text-white text-xs font-heading font-semibold px-3 py-1.5 rounded-full transition-colors"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-heading font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-primary-500/40 transition-all hover:scale-[1.02]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
             >
               Install
-            </button>
+            </motion.button>
             <button
               onClick={handleDismiss}
               aria-label="Tutup"
-              className="p-1 hover:bg-primary-700 rounded-full transition-colors"
+              className="p-2 hover:bg-primary-700/50 rounded-xl transition-all hover:scale-110"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -76,3 +78,4 @@ export default function InstallBanner() {
     </AnimatePresence>
   )
 }
+
